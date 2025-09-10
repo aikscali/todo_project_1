@@ -55,6 +55,15 @@ class GlobalDAO {
     }
 
 
+    async findOne(query) {
+    try {
+        return await this.model.findOne(query);
+    } catch (error) {
+        throw new Error(`Error in findOne: ${error.message}`);
+    }
+}
+
+
 
 }
 
