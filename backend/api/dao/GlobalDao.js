@@ -11,9 +11,6 @@ class GlobalDAO {
             throw new Error(`Error creating document: ${error.message}`);
         }
     }
-
-
-
     async read(id) {
         try {
             const document = await this.model.findById(id);
@@ -23,7 +20,6 @@ class GlobalDAO {
             throw new Error(`Error getting document by ID: ${error.message}`);
         }
     }
-
     async update(id, updateData) {
         try {
             const updatedDocument = await this.model.findByIdAndUpdate(
