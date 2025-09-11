@@ -92,5 +92,26 @@ class UserController extends GlobalController {
   }
 
 
+  async resetPassword(req, res) {
+    try {
+      const email = req.body.email;
+
+      // verify if this user with this email exists
+      const existingUser = await this.dao.findOne({
+          $or: [
+              { email: req.body.email }
+          ]
+      });
+
+      if (!existingUser) {
+          return res.status(404).json({ message: "No user found with this email" });
+      }
+
+      
+    }catch (error) {
+      return res.status(400).json({ message: error.message });
+    }
+  }
+
 }
 module.exports = new UserController();
