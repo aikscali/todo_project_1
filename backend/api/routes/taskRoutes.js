@@ -1,11 +1,18 @@
+// /routes/taskRoutes.js
+import { Router } from 'express';
+import TaskController from '../controllers/tasks.controller.js';
+
 const express = require("express");
-const UserController = require("../controllers/UserController");
+const { createTask, getTasks } = require("../controllers/TaskController");
+
 const router = express.Router();
 
-router.get("/", (req, res) => UserController.getAll(req, res));
-router.get("/:id", (req, res) => UserController.read(req, res));
-router.post("/", (req, res) => UserController.createUser(req, res));
-router.put("/:id", (req, res) => UserController.update(req, res));
-router.delete("/:id", (req, res) => UserController.delete(req, res));
-router.post("/login", (req, res) => UserController.login(req, res));
+/**
+ * Rutas de tareas
+ * POST /tasks -> Crear una tarea
+ * GET /tasks -> Listar todas las tareas
+ */
+router.post("/tasks", createTask);
+router.get("/tasks", getTasks);
+
 module.exports = router;
