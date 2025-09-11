@@ -1,5 +1,5 @@
 // /models/Task.js
-import mongoose from "mongoose";
+const mongoose = require("mongoose");
 
 /**
  * @typedef {Object} Task
@@ -25,4 +25,4 @@ const taskSchema = new mongoose.Schema(
   { timestamps: true } // agrega automáticamente createdAt y updatedAt
 );
 
-export default mongoose.model("Task", taskSchema);
+module.exports = mongoose.model("Task", taskSchema);

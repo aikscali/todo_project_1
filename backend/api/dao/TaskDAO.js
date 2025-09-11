@@ -1,12 +1,12 @@
 // /dao/taskDao.js
-import Task from "../models/Task.js";
+const Task = require("../models/Task");
 
 /**
  * Inserta una nueva tarea en la base de datos
  * @param {Object} taskData - Datos de la tarea
  * @returns {Promise<Task>}
  */
-export const createTaskInDB = async (taskData) => {
+const createTaskInDB = async (taskData) => {
   const task = new Task(taskData);
   return await task.save();
 };
@@ -15,6 +15,8 @@ export const createTaskInDB = async (taskData) => {
  * Obtiene todas las tareas de la base de datos
  * @returns {Promise<Task[]>}
  */
-export const getAllTasksFromDB = async () => {
+const getAllTasksFromDB = async () => {
   return await Task.find();
 };
+
+module.exports = { createTaskInDB, getAllTasksFromDB };

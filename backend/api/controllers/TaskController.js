@@ -1,12 +1,12 @@
 // /controllers/TaskController.js
-import { createTaskInDB, getAllTasksFromDB } from "../dao/taskDao.js";
+const { createTaskInDB, getAllTasksFromDB } = require("../dao/taskDao");
 
 /**
  * Crear una nueva tarea.
  * @param {import('express').Request} req
  * @param {import('express').Response} res
  */
-export const createTask = async (req, res) => {
+const createTask = async (req, res) => {
   try {
     const { title, detail, datetime } = req.body;
 
@@ -38,7 +38,7 @@ export const createTask = async (req, res) => {
  * @param {import('express').Request} req
  * @param {import('express').Response} res
  */
-export const getTasks = async (req, res) => {
+const getTasks = async (req, res) => {
   try {
     const tasks = await getAllTasksFromDB();
     return res.json(tasks);
@@ -47,3 +47,5 @@ export const getTasks = async (req, res) => {
     return res.status(500).json({ message: "Server error" });
   }
 };
+
+module.exports = { createTask, getTasks };

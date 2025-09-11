@@ -1,7 +1,4 @@
 // /routes/taskRoutes.js
-import { Router } from 'express';
-import TaskController from '../controllers/tasks.controller.js';
-
 const express = require("express");
 const { createTask, getTasks } = require("../controllers/TaskController");
 
