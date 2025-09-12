@@ -6,10 +6,10 @@ const router = express.Router();
 
 /**
  * Rutas de tareas
- * POST /tasks -> Crear una tarea
- * GET /tasks -> Listar todas las tareas
+ * POST /api/v1/tasks -> Crear una tarea
+ * GET /api/v1/tasks -> Listar todas las tareas
  */
-router.post("/tasks", createTask);
-router.get("/tasks", getTasks);
+router.post("/", createTask);
+router.get("/", getTasks);
 
 module.exports = router;
