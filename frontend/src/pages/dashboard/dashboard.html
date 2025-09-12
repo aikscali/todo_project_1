@@ -2,19 +2,19 @@
 <html lang="es">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Dashboard - Lista de Tareas</title>
-  <link rel="stylesheet" href="../../styles/style.css" />
+  <link rel="stylesheet" href="./dashboard.css" />
 </head>
 <body>
-  <div id="app"></div>
+  <div class="wrapper">
+    <h1>TaskFlow</h1>
+    <div id="app" class="layout"></div>
+  </div>
 
-  <!-- Importar tu Dashboard.js con Vite -->
   <script type="module">
     import Dashboard from './Dashboard.js';
-
-    const root = document.getElementById('app');
-    root.appendChild(Dashboard());
+    document.getElementById('app').appendChild(Dashboard());
   </script>
 </body>
 </html>

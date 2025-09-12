@@ -5,6 +5,12 @@ export default function TaskList({ tasks = [] }) {
 
   if (!Array.isArray(tasks)) tasks = [];
 
+  const badgeClass = (status) => {
+    const map = { 'todo':'todo', 'doing':'doing', 'done':'done',
+                  'Por hacer':'todo', 'Haciendo':'doing', 'Hecho':'done' };
+    return map[status] || 'todo';
+  };
+
   tasks.forEach(task => {
     const card = document.createElement('div');
     card.className = 'task-card';
@@ -12,7 +18,11 @@ export default function TaskList({ tasks = [] }) {
       <h3>${task.title}</h3>
       <p>${task.detail || ""}</p>
       <p>${task.date || ""} ${task.time || ""}</p>
-      <p>Status: ${task.status || "Pendiente"}</p>
+      <span class="badge ${badgeClass(task.status)}">
+        ${task.status === 'todo' ? 'Por hacer' :
+           task.status === 'doing' ? 'Haciendo' :
+           task.status === 'done' ? 'Hecho' : (task.status || 'Por hacer')}
+      </span>
     `;
     list.appendChild(card);
   });
