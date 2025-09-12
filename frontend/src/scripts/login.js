@@ -1,3 +1,6 @@
+require("dotenv").config();
+
+
 document.addEventListener('DOMContentLoaded', function(){
     const loginForm = document.getElementById('login-form');
     const emailInput = document.getElementById('email');
@@ -11,7 +14,7 @@ document.addEventListener('DOMContentLoaded', function(){
     const createAccountButton = document.getElementById('signin-button');
 
     //URLs de la API
-    const API_BASE_URL = 'http://localhost:8080/api';
+    const API_BASE_URL = process.env.SERVER_URL || 'http://localhost:3000';
     const LOGIN_URL = `${API_BASE_URL}/api/login`;
 
     //Validación en tiempo real

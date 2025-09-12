@@ -63,7 +63,7 @@ class UserController extends GlobalController {
       const isPasswordValid = await bcrypt.compare(password, user.passwordHash);
       if (!isPasswordValid) {
           return res.status(401).json({
-              message: "Contraseña o username incorrectos."
+              message: "Contraseña o email incorrectos."
           });
       }
 
