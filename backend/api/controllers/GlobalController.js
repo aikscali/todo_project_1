@@ -1,3 +1,5 @@
+
+
 class GlobalController {
     constructor(dao) {
         this.dao = dao;
