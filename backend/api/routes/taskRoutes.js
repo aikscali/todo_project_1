@@ -1,11 +1,12 @@
 const express = require("express");
-const UserController = require("../controllers/UserController");
+const TaskController = require("../controllers/TaskController");
+const authMiddleware = require("../middleware/authMiddleware");
+
+
 const router = express.Router();
 
-router.get("/", (req, res) => UserController.getAll(req, res));
-router.get("/:id", (req, res) => UserController.read(req, res));
-router.post("/", (req, res) => UserController.createUser(req, res));
-router.put("/:id", (req, res) => UserController.update(req, res));
-router.delete("/:id", (req, res) => UserController.delete(req, res));
-router.post("/login", (req, res) => UserController.login(req, res));
+router.post("/", authMiddleware, (req, res) => TaskController.createTask(req, res));
+router.get("/", authMiddleware, (req, res) => TaskController.getTasks(req, res));
+
+
 module.exports = router;
