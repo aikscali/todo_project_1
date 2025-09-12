@@ -8,7 +8,22 @@ const app = express();
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true}));
-app.use(cors());
+
+
+// set the CORS options
+
+const corsOptions = {
+  origin: [
+    process.env.CLIENT_URL,   
+    "http://localhost:5173" 
+  ],
+  methods: ["GET", "POST", "PUT", "DELETE"],
+  allowedHeaders: ["Content-Type", "Authorization"]
+};
+
+
+
+app.use(cors(corsOptions));
 
 app.use("/api/v1", routes);
 
