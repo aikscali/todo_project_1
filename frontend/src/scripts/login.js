@@ -14,7 +14,7 @@ document.addEventListener('DOMContentLoaded', function(){
 
     //URLs de la API
     const API_BASE_URL = process.env.SERVER_URL || 'http://localhost:3000';
-    const LOGIN_URL = `${API_BASE_URL}/api/login`;
+    const LOGIN_URL = `${API_BASE_URL}/api/v1/users/login`;
 
     //Validación en tiempo real
     emailInput.addEventListener('input', validateForm);
@@ -109,7 +109,7 @@ document.addEventListener('DOMContentLoaded', function(){
                 headers: {
                     'Content-type': 'application/json'
                 },
-                bosy: JSON.stringify(loginData)
+                body: JSON.stringify(loginData)
             });
 
             const data = await response.json();
@@ -140,14 +140,20 @@ document.addEventListener('DOMContentLoaded', function(){
         if(data.id) {
             localStorage.setItem('userId', data.id);
         }
-
+        if (data.userId) {
+            localStorage.setItem('userId', data.userId);
+        }
+        if (data.username) {
+            localStorage.setItem('username', data.username);
+        }
+  
         if (successMessage) {
             successMessage.textContent = '';
             successMessage.style.display = 'block';
         }
 
         setTimeout(()=>{
-            window.location.href = '/dashboard';
+            window.location.href = '../dashboard/dashboard.html';   
         }, 1500);
     }
 
