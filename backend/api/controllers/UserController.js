@@ -52,7 +52,11 @@ class UserController extends GlobalController {
       const password = req.body.password;
       
       //verify if the user exists (filter by username)
-      const user = await this.dao.findOne({ email: email });
+      const user = await this.dao.findOne({
+          $or: [
+              { email: req.body.email }
+          ]
+      });
       if (!user) {
           return res.status(404).json({
               message: "Usuario no encontrado."
