@@ -48,11 +48,11 @@ class UserController extends GlobalController {
   async login(req,res){
     try{
       // get the usernme and password from the request body
-      const username = req.body.username;
+      const email = req.body.email;
       const password = req.body.password;
       
       //verify if the user exists (filter by username)
-      const user = await this.dao.findOne({ username: username });
+      const user = await this.dao.findOne({ email: email });
       if (!user) {
           return res.status(404).json({
               message: "Usuario no encontrado."
@@ -63,7 +63,7 @@ class UserController extends GlobalController {
       const isPasswordValid = await bcrypt.compare(password, user.passwordHash);
       if (!isPasswordValid) {
           return res.status(401).json({
-              message: "Contraseña o username incorrectos."
+              message: "Contraseña o email incorrectos."
           });
       }
 
@@ -75,7 +75,8 @@ class UserController extends GlobalController {
         {
           id: user._id,
           username: user.username,
-          roles: user.roles
+          roles: user.roles,
+          email: user.email
         },
         process.env.JWT_SECRET, 
         { expiresIn: process.env.JWT_EXPIRES }
