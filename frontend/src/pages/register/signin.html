@@ -3,32 +3,56 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Login Page</title>
+    <title>Crear Cuenta</title>
     <link rel="stylesheet" href="../../styles/register.css">
     <script defer src="../../scripts/register.js"></script>
 </head>
 <body>
     <div class="register-container">
-        <h2>Register</h2>
+        <h2>Crear Cuenta</h2>
         <form id="register-form">
             <div class="form-group">
+                <label for="name">Nombre:</label>
+                <input type="text" id="name" name="name" required>
+            </div>
+
+            <div class="form-group">
+                <label for="last-name">Apellido:</label>
+                <input type="text" id="last-name" name="last-name" required>
+            </div>
+
+            <div class="form-group">
+                <label for="age">Edad:</label>
+                <input type="number" id="age" name="age" min="13" required>
+            </div>
+
+            <div class="form-group">
                 <label for="email">Email:</label>
-                <input type="email" id="email" name="email" required>
+                <input type="email" id="email" name="email" required placeholder="tu@email.com" autocomplete="email">
             </div>
+
             <div class="form-group">
-                <label for="username">Username:</label>
-                <input type="text" id="username" name="username" required>
+                <label for="password">Contraseña:</label>
+                <input type="password" id="password" name="password"
+                pattern="(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}"
+                title="Debe contener al menos 8 caracteres, una mayúscula, una minúscula y un caracter especial." 
+                required>
+                <div class="error-message" id="password-error">
+                    La contraseña no cumple con todos los requisitos
+                </div>
             </div>
+
             <div class="form-group">
-                <label for="password">Password:</label>
-                <input type="password" id="password" name="password" required>
-            </div>
-            <div class="form-group">
-                <label for="confirm-password">Confirm Password:</label>
+                <label for="confirm-password">Confirmar contraseña:</label>
                 <input type="password" id="confirm-password" name="confirm-password" required>
+                <div class="error-message" id="confirm-pass-error">Las contraseñas no coinciden</div>
             </div>
-            <Button type="submit">Register</Button>
+
+            <div class="spinner" id="spinner"></div>
+            <Button type="submit" class="btn-primary" id="signin-button" disabled>Register</Button>
+
         </form>
+        
         <button onclick="location.href='../login/login.html'">Back to Login</button>
     </div>
 </html>
