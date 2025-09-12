@@ -13,11 +13,11 @@ export default function TaskForm(onTaskCreated) {
       <input class="input" type="time" name="time" required />
     </div>
     <select class="select" name="status" required>
-      <option value="todo">Por hacer</option>
-      <option value="doing">Haciendo</option>
-      <option value="done">Hecho</option>
+      <option value="todo">Pendiente</option>
+      <option value="doing">En progreso</option>
+      <option value="done">Completada</option>
     </select>
-    <button class="btn" type="submit">Guardar tarea</button>
+    <button class="btn" type="submit">Crear</button>
   `;
 
   form.addEventListener('submit', (e) => {
