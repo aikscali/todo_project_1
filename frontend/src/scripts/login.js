@@ -11,6 +11,7 @@ document.addEventListener('DOMContentLoaded', function(){
     const spinner = document.getElementById('spinner');
     const successMessage = document.getElementById('success-message');
     const errorAnnouncement = document.getElementById('error-announcement');
+    const createAccountButton = document.getElementById('signin-button');
 
     //URLs de la API
     const API_BASE_URL = process.env.SERVER_URL || 'http://localhost:3000';
@@ -36,6 +37,10 @@ document.addEventListener('DOMContentLoaded', function(){
         if(validateForm()){
             loginUser();
         }
+    });
+
+    createAccountButton.addEventListener('click', function(){
+        window.location.href = '../register/signin.html';
     });
 
     function validateEmail() {

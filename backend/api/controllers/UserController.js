@@ -48,11 +48,14 @@ class UserController extends GlobalController {
   async login(req,res){
     try{
       // get the usernme and password from the request body
-      const email = req.body.email;
+      const email = req.body.email.trim().toLowerCase();
+
       const password = req.body.password;
       
       //verify if the user exists (filter by username)
       const user = await this.dao.findOne({ email: email });
+
+
       if (!user) {
           return res.status(404).json({
               message: "Usuario no encontrado."
