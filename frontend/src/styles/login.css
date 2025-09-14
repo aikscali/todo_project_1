@@ -21,7 +21,7 @@ body {
     box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
     padding: 2.5rem;
     width: 100%;
-    max-width: 450px;
+    max-width: 600px;
     text-align: center;
 }
 
@@ -58,6 +58,16 @@ input:focus {
 
 input.invalid {
     border-color: #ef4444;
+}
+
+input {
+    text-align: left;
+    width: 100%;
+    padding: 14px;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    font-size: 16px;
+    transition: border-color 0.3s, box-shadow 0.3s;
 }
 
 .error-message {
