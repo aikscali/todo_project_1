@@ -27,10 +27,6 @@ const corsOptions = {
 
 
 app.use(cors({
-  origin: [
-    'http://localhost:5173',       // frontend local
-    process.env.CLIENT_URL, // frontend en producción
-  ],
   credentials: true  
 }));
 
