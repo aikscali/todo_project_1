@@ -3,12 +3,14 @@ require("dotenv").config();
 const cors = require("cors");
 const routes = require("./routes/routes");
 const {connectDB} = require("./config/database");
+const cookieParser = require('cookie-parser');
+
 
 const app = express();
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true}));
-
+app.use(cookieParser());
 
 // set the CORS options
 
@@ -23,7 +25,14 @@ const corsOptions = {
 
 
 
-app.use(cors());
+
+app.use(cors({
+  origin: [
+    'http://localhost:5173',       // frontend local
+    process.env.CLIENT_URL, // frontend en producción
+  ],
+  credentials: true  
+}));
 
 app.use("/api/v1", routes);
 

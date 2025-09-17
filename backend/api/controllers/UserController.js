@@ -31,7 +31,7 @@ class UserController extends GlobalController {
       hashPassword = await bcrypt.hash(hashPassword, 10);
       req.body.passwordHash = hashPassword;
       delete req.body.password;
-      
+
       // create the user with the dao create function
       const user = await this.dao.create(req.body);
       return res.status(201).json({
@@ -51,7 +51,7 @@ class UserController extends GlobalController {
       const email = req.body.email.trim().toLowerCase();
 
       const password = req.body.password;
-      
+
       //verify if the user exists (filter by username)
       const user = await this.dao.findOne({ email: email });
 
@@ -78,18 +78,23 @@ class UserController extends GlobalController {
         {
           id: user._id,
           username: user.username,
+          name: user.name,
           roles: user.roles,
           email: user.email
         },
-        process.env.JWT_SECRET, 
+        process.env.JWT_SECRET,
         { expiresIn: process.env.JWT_EXPIRES }
       );
 
       // return the token and the user id if login is successful
-      return res.status(200).json({
-          token,
-          id: user._id,
-      });
+      res.cookie('token', token, {
+        httpOnly: true,
+        secure: true,
+        sameSite: 'Strict',
+        path: '/',  // <-- añadir esto
+        maxAge: 1000 * 60 * 60 * 24
+      }).status(200).json({ id: user._id });
+          
     }catch(error){
       return res.status(400).json({ message: error.message });
     }
@@ -111,11 +116,29 @@ class UserController extends GlobalController {
           return res.status(404).json({ message: "No user found with this email" });
       }
 
-      
+
     }catch (error) {
       return res.status(400).json({ message: error.message });
     }
   }
+
+
+  async logout(req, res) {
+    try {
+      return res.cookie('token', '', {
+        httpOnly: true,
+        secure: true,
+        sameSite: 'Strict',
+        path: '/',  
+        expires: new Date(0)
+      }).status(200).json({ message: 'Sesión cerrada correctamente' });
+    } catch (error) {
+      return res.status(500).json({ message: error.message });
+    }
+  }
+
+
+  
 
 }
 module.exports = new UserController();
