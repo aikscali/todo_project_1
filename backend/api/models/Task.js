@@ -1,28 +1,29 @@
-// /models/Task.js
 const mongoose = require("mongoose");
 
-/**
- * @typedef {Object} Task
- * @property {string} title - Título de la tarea
- * @property {string} [detail] - Detalle/descrición
- * @property {Date} datetime - Fecha y hora de la tarea
- * @property {"pending"|"in-progress"|"completed"} status - Estado de la tarea
- * @property {Date} createdAt
- * @property {Date} updatedAt
- */
 
-const taskSchema = new mongoose.Schema(
+const TaskSchema = new mongoose.Schema(
   {
-    title: { type: String, required: true, trim: true },
-    detail: { type: String, trim: true },
-    datetime: { type: Date, required: true },
-    status: {
-      type: String,
-      enum: ["pending", "in-progress", "completed"],
-      default: "pending", // Sprint 1: todas inician como "pending"
-    },
+    ownerId: {type: mongoose.Schema.Types.ObjectId, ref: "User", required: true},
+    title: {type: String, required: true, trim: true},
+    description: {type: String, default: ""},
+    status: {type: String, enum: ["todo", "in_progress", "done", "archived"], default: "todo"},
+    priority: {type: String, enum: ["low", "medium", "high", "urgent"],default: "medium"},
+    dueDate: {type: Date},
+    startDate: {type: Date},
+    completedAt: {type: Date},
+    labels: [
+      {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "Tag",
+        required: false
+      }
+    ],
+  
   },
-  { timestamps: true } // agrega automáticamente createdAt y updatedAt
+  {
+    timestamps: true
+  }
 );
 
-module.exports = mongoose.model("Task", taskSchema);
+
+module.exports = mongoose.model("Task", TaskSchema);

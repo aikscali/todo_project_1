@@ -1,15 +1,13 @@
 // /routes/taskRoutes.js
 const express = require("express");
-const { createTask, getTasks } = require("../controllers/TaskController");
+const TaskController = require("../controllers/TaskController");
+const authMiddleware = require("../middleware/authMiddleware");
+
 
 const router = express.Router();
 
-/**
- * Rutas de tareas
- * POST /api/v1/tasks -> Crear una tarea
- * GET /api/v1/tasks -> Listar todas las tareas
- */
-router.post("/", createTask);
-router.get("/", getTasks);
+router.post("/", authMiddleware, (req, res) => TaskController.createTask(req, res));
+router.get("/", authMiddleware, (req, res) => TaskController.getTasks(req, res));
+
 
 module.exports = router;

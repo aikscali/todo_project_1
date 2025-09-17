@@ -10,7 +10,22 @@ const app = express();
 console.log("DEBUG MONGO_URI:", process.env.MONGO_URI);
 
 app.use(express.json());
-app.use(express.urlencoded({ extended: true }));
+app.use(express.urlencoded({ extended: true}));
+
+
+// set the CORS options
+
+const corsOptions = {
+  origin: [
+    process.env.CLIENT_URL,   
+    "http://localhost:5173" 
+  ],
+  methods: ["GET", "POST", "PUT", "DELETE"],
+  allowedHeaders: ["Content-Type", "Authorization"]
+};
+
+
+
 app.use(cors());
 
 app.use("/api/v1", routes);

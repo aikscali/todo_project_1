@@ -1,51 +1,57 @@
-// /controllers/TaskController.js
-const { createTaskInDB, getAllTasksFromDB } = require("../dao/taskDao");
+const GlobalController = require("./GlobalController");
+const TaskDao = require("../dao/TaskDAO");
+const bcrypt = require("bcrypt");
+const jwt = require("jsonwebtoken");
 
-/**
- * Crear una nueva tarea.
- * @param {import('express').Request} req
- * @param {import('express').Response} res
- */
-const createTask = async (req, res) => {
-  try {
-    const { title, detail, datetime } = req.body;
 
-    if (!title || !datetime) {
-      return res.status(400).json({ message: "Title and datetime are required" });
-    }
-
-    const dt = new Date(datetime);
-    if (Number.isNaN(dt.getTime())) {
-      return res.status(400).json({ message: "Invalid datetime format" });
-    }
-
-    const newTask = await createTaskInDB({
-      title: title.trim(),
-      detail: detail?.trim() || "",
-      datetime: dt,
-      status: "pending", // Sprint 1: todas empiezan pendientes
-    });
-
-    return res.status(201).json({ message: "Task created", task: newTask });
-  } catch (error) {
-    console.error("createTask error:", error);
-    return res.status(500).json({ message: "Server error" });
+class TaskController extends GlobalController {
+  constructor() {
+    super(TaskDao);
   }
-};
 
-/**
- * Listar todas las tareas.
- * @param {import('express').Request} req
- * @param {import('express').Response} res
- */
-const getTasks = async (req, res) => {
-  try {
-    const tasks = await getAllTasksFromDB();
-    return res.json(tasks);
-  } catch (error) {
-    console.error("getTasks error:", error);
-    return res.status(500).json({ message: "Server error" });
+
+  async createTask(req, res) {
+    
+    try {
+      //first we get the data from the body
+      const { title, description, status, priority, dueDate, startDate, labels } = req.body;
+      const ownerId = req.user.id;
+
+      // create the task object and save it in the database
+      const newTask = await TaskDao.create({
+        ownerId,
+        title,
+        description,
+        status,
+        priority,
+        dueDate,
+        startDate,
+        labels,
+      });
+
+
+      res.status(201).json(newTask);
+    }catch (error) {
+      res.status(500).json({ message: error.message });
+    }
+  
   }
-};
 
-module.exports = { createTask, getTasks };
+
+  async getTasks(req, res) {
+    try {
+
+      //get the user id from the token
+      const ownerId = req.user.id; 
+
+      //get all tasks that belong to the user
+      const tasks = await TaskDao.getAll({ ownerId });
+      res.status(200).json(tasks);
+      
+    } catch (error) {
+      res.status(500).json({ error: error.message });
+    }
+  }
+
+}
+module.exports = new TaskController();
