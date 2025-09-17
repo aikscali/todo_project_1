@@ -1,0 +1,123 @@
+<div class="dashboard-container">
+      <!-- Header -->
+      <header class="dashboard-header">
+        <div class="header-content">
+          <h1 class="greeting">Hola, Usuario</h1>
+          <button type="button" class="btn-logout" id="logout-button">Cerrar sesión</button>
+        </div>
+      </header>
+
+      <div class="dashboard-body">
+        <!-- Sidebar -->
+        <aside class="dashboard-sidebar">
+          <h2 class="sidebar-title">Menú</h2>
+          <nav class="sidebar-nav">
+            <ul class="nav-list">
+              <li class="nav-item active">
+                <a href="#" class="nav-link" data-section="tareas">Tareas</a>
+              </li>
+              <li class="nav-item">
+                <a href="#" class="nav-link" data-section="perfil">Perfil</a>
+              </li>
+            </ul>
+          </nav>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="dashboard-main">
+          <div class="kanban-board">
+            <!-- To Do Column -->
+            <div class="kanban-column">
+              <div class="column-header">
+                <h3 class="column-title">To Do</h3>
+                <button class="add-task-btn" data-status="todo" title="Agregar tarea">+</button>
+              </div>
+              <div class="column-content" id="todo-column">
+                <div class="task-card">
+                  <h4 class="task-title">Tarea pendiente</h4>
+                  <div class="task-actions">
+                    <button class="task-btn edit-btn" title="Editar">✏️</button>
+                    <button class="task-btn delete-btn" title="Eliminar">🗑️</button>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- In Progress Column -->
+            <div class="kanban-column">
+              <div class="column-header">
+                <h3 class="column-title">In Progress</h3>
+                <button class="add-task-btn" data-status="progress" title="Agregar tarea">+</button>
+              </div>
+              <div class="column-content" id="progress-column">
+                <div class="task-card">
+                  <h4 class="task-title">Tarea en curso</h4>
+                  <div class="task-actions">
+                    <button class="task-btn edit-btn" title="Editar">✏️</button>
+                    <button class="task-btn delete-btn" title="Eliminar">🗑️</button>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Done Column -->
+            <div class="kanban-column">
+              <div class="column-header">
+                <h3 class="column-title">Done</h3>
+                <button class="add-task-btn" data-status="done" title="Agregar tarea">+</button>
+              </div>
+              <div class="column-content" id="done-column">
+                <div class="task-card">
+                  <h4 class="task-title">Tarea completada</h4>
+                  <div class="task-actions">
+                    <button class="task-btn edit-btn" title="Editar">✏️</button>
+                    <button class="task-btn delete-btn" title="Eliminar">🗑️</button>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </main>
+      </div>
+
+      <!-- Footer -->
+      <footer class="dashboard-footer">
+        <p>Proyecto Integrador - 2025</p>
+      </footer>
+    </div>
+
+    <!-- Modal para crear/editar tareas -->
+    <div id="task-modal" class="modal" style="display: none;">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h3 id="modal-title">Agregar Tarea</h3>
+          <button class="modal-close" id="modal-close">&times;</button>
+        </div>
+        <form id="task-form">
+          <div class="form-group">
+            <label for="task-name">Nombre de la tarea:</label>
+            <input type="text" id="task-name" name="task-name" required placeholder="Ingresa el nombre de la tarea">
+            <div id="task-name-error" class="error-message"></div>
+          </div>
+          <div class="form-group">
+            <label for="task-description">Descripción (opcional):</label>
+            <textarea id="task-description" name="task-description" placeholder="Describe la tarea..."></textarea>
+          </div>
+          <div class="form-group">
+            <label for="task-status">Estado:</label>
+            <select id="task-status" name="task-status">
+              <option value="todo">To Do</option>
+              <option value="progress">In Progress</option>
+              <option value="done">Done</option>
+            </select>
+          </div>
+          <div class="modal-actions">
+            <button type="button" class="btn-secondary" id="cancel-task">Cancelar</button>
+            <button type="submit" class="btn-primary" id="save-task">Guardar</button>
+          </div>
+        </form>
+      </div>
+    </div>
+
+
+<link rel="stylesheet" href="../styles/dashboard.css">

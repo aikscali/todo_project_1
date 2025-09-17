@@ -1,4 +1,5 @@
-document.addEventListener('DOMContentLoaded', function(){
+export function initRegister() {
+    // CORREGIDO: Sin '#' en getElementById
     const form = document.getElementById('register-form');
     const passwordInput = document.getElementById('password');
     const confirmPasswordInput = document.getElementById('confirm-password');
@@ -6,37 +7,41 @@ document.addEventListener('DOMContentLoaded', function(){
     const confirmPassError = document.getElementById('confirm-pass-error');
     const signinButton = document.getElementById('signin-button');
     const spinner = document.getElementById('spinner');
-
+    const backToLoginButton = document.getElementById('back-to-login');
     const toast = document.getElementById('toast');
-    if(!toast){
-        toast = document.createElement('div');
-        toast.className='toast';
-        toast.id = 'toast';
-        toast.textContent = 'Registro exitoso';
-        document.body.appendChild(toast);
+
+    const API_BASE_URL = import.meta.env.VITE_SERVER_URL || 'http://localhost:3000';
+    const REGISTER_URL = `${API_BASE_URL}/api/v1/users/`;
+
+    // Verificar que existan los elementos antes de agregar event listeners
+    if (!form || !passwordInput || !confirmPasswordInput || !signinButton) {
+        console.error('No se encontraron elementos necesarios para el registro');
+        return;
     }
 
-    const API_BASE_URL = '';
-    const REGISTER_URL=`${API_BASE_URL}/api/create-user`;
-
+    // Event listeners
     passwordInput.addEventListener('input', validatePassword);
-
     confirmPasswordInput.addEventListener('input', validateConfirmPassword);
-
     form.addEventListener('input', validateForm);
-
     form.addEventListener('submit', handleSubmit);
+    
+    // Back to login button handler
+    if (backToLoginButton) {
+        backToLoginButton.addEventListener('click', () => {
+            window.location.hash = '#/login';
+        });
+    }
 
     function validatePassword() {
         const password = passwordInput.value;
         const regex = /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/;
 
         if (password && !regex.test(password)) {
-            passwordError.style.display = 'block';
+            if (passwordError) passwordError.style.display = 'block';
             return false;
         }
         else {
-            passwordError.style.display = 'none';
+            if (passwordError) passwordError.style.display = 'none';
             return true;
         }
     }
@@ -45,12 +50,12 @@ document.addEventListener('DOMContentLoaded', function(){
         const password = passwordInput.value;
         const confirmPassword = confirmPasswordInput.value;
 
-        if ( confirmPassword && password !== confirmPassword ) {
-            confirmPassError.style.display='block';
+        if (confirmPassword && password !== confirmPassword) {
+            if (confirmPassError) confirmPassError.style.display = 'block';
             return false;
         }
         else {
-            confirmPassError.style.display= 'none';
+            if (confirmPassError) confirmPassError.style.display = 'none';
             return true;
         }
     }
@@ -65,25 +70,22 @@ document.addEventListener('DOMContentLoaded', function(){
             return true;
         });
 
-        signinButton.disabled= ! (allFieldsFilled && isPasswordValid && isConfirmPasswordValid);
+        signinButton.disabled = !(allFieldsFilled && isPasswordValid && isConfirmPasswordValid);
     }
 
     async function handleSubmit(e) {
         e.preventDefault();
 
-        spinner.style.display = 'block';
+        if (spinner) spinner.style.display = 'block';
         signinButton.disabled = true;
 
         const formData = {
-            name: document.getElementById('name').value,
-            lastName: document.getElementById('last-name').value,
-            age: document.getElementById('age').value,
-            email: document.getElementById('email').value,
+            name: document.getElementById('name')?.value,
+            lastName: document.getElementById('last-name')?.value,
+            age: document.getElementById('age')?.value,
+            email: document.getElementById('email')?.value,
             password: passwordInput.value
         };
-
-        const spinner = document.getElementById('spinner');
-        spinner.style.display = 'block';
 
         try {
             const response = await fetch(REGISTER_URL, {
@@ -96,28 +98,32 @@ document.addEventListener('DOMContentLoaded', function(){
 
             const data = await response.json();
 
-            spinner.style.display = 'none';
+            if (spinner) spinner.style.display = 'none';
 
             if (response.ok) {
-                toast.textContent = 'Registro exitoso';
-                toast.className = 'toast show';
+                if (toast) {
+                    toast.textContent = 'Registro exitoso';
+                    toast.classList.add('show');
 
-                setTimeout(function() {
-                    toast.className = toast.className.replace('show', '');
-
-                    window.location.href = '../login/login.html';
-                }, 3000);
+                    setTimeout(() => {
+                        toast.classList.remove('show');
+                        window.location.hash = '#/login';
+                    }, 3000);
+                } else {
+                    alert('Registro exitoso. Redirigiendo al login...');
+                    window.location.hash = '#/login';
+                }
 
                 form.reset();
+                validateForm();
 
             } else {
                 alert(data.message || 'Error en el registro');
                 signinButton.disabled = false;
             }
         
-        }
-        catch (error) {
-            spinner.style.display = 'none';
+        } catch (error) {
+            if (spinner) spinner.style.display = 'none';
             signinButton.disabled = false;
             
             console.error('Error:', error);
@@ -125,6 +131,7 @@ document.addEventListener('DOMContentLoaded', function(){
         }
     }
 
+    // CORREGIDO: querySelectorAll para múltiples elementos
     const passwordFields = document.querySelectorAll('input[type="password"]');
     passwordFields.forEach(field => {
         const toggle = document.createElement('span');
@@ -151,4 +158,7 @@ document.addEventListener('DOMContentLoaded', function(){
             }
         });
     });
-})
+
+    // Ejecutar validación inicial
+    validateForm();
+}

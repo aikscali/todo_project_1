@@ -2,7 +2,9 @@ const express = require("express");
 require("dotenv").config();
 const cors = require("cors");
 const routes = require("./routes/routes");
-const { connectDB } = require("./config/database");
+const {connectDB} = require("./config/database");
+const cookieParser = require('cookie-parser');
+
 
 const app = express();
 
@@ -11,22 +13,23 @@ console.log("DEBUG MONGO_URI:", process.env.MONGO_URI);
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true}));
-
+app.use(cookieParser());
 
 // set the CORS options
 
+
 const corsOptions = {
   origin: [
-    process.env.CLIENT_URL,   
-    "http://localhost:5173" 
+    process.env.CLIENT_URL,        // ← https://front-todo-eight.vercel.app
+    "http://localhost:5173"
   ],
   methods: ["GET", "POST", "PUT", "DELETE"],
-  allowedHeaders: ["Content-Type", "Authorization"]
+  allowedHeaders: ["Content-Type", "Authorization"],
+  credentials: true
 };
 
 
-
-app.use(cors());
+app.use(cors(corsOptions));
 
 app.use("/api/v1", routes);
 

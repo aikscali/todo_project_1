@@ -1,0 +1,21 @@
+
+:root {
+  --primary-color: #AD49E1;
+  --secondary-color: #7A1CAC;
+  --background-color: #2E073F;
+  --text-color: #EBD3F8;
+  --font-family: 'Open Sans', sans-serif;
+}
+
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: var(--font-family);
+  background-color: var(--background-color);
+  color: var(--text-color);
+}
