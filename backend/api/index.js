@@ -17,7 +17,7 @@ app.use(cookieParser());
 
 const corsOptions = {
   origin: [
-    process.env.CLIENT_URL,      // https://front-todo-eight.vercel.app
+    process.env.CLIENT_URL,        // ← https://front-todo-eight.vercel.app
     "http://localhost:5173"
   ],
   methods: ["GET", "POST", "PUT", "DELETE"],
@@ -25,7 +25,10 @@ const corsOptions = {
   credentials: true
 };
 
+
 app.use(cors(corsOptions));
+
+app.options('*', cors(corsOptions));
 
 app.use("/api/v1", routes);
 
