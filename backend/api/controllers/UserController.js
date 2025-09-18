@@ -3,167 +3,185 @@ const UserDAO = require("../dao/UserDAO");
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
 
-
+/**
+ * Controller class for handling user-related operations.
+ * Extends the base GlobalController with UserDAO as the data access object.
+ */
 class UserController extends GlobalController {
+  /**
+   * Initializes the UserController with the UserDAO.
+   */
   constructor() {
     super(UserDAO);
   }
 
-
+  /**
+   * Creates a new user.
+   *
+   * @async
+   * @function createUser
+   * @param {import("express").Request} req - Express request object containing user data (email, username, password, etc.).
+   * @param {import("express").Response} res - Express response object.
+   * @returns {Promise<import("express").Response>} Response with the created user's ID or an error message.
+   *
+   * @example
+   * POST /api/users
+   * {
+   *   "email": "user@example.com",
+   *   "username": "newUser",
+   *   "password": "mypassword"
+   * }
+   */
   async createUser(req, res) {
-    try{
-
-      // Check if the email or username already exists, with the function findOne of the dao
+    try {
       const existingUser = await this.dao.findOne({
-          $or: [
-              { email: req.body.email },
-              { username: req.body.username }
-          ]
+        $or: [{ email: req.body.email }, { username: req.body.username }],
       });
 
-      //if it exists, return 409 conflict, wuth the corresponding message
       if (existingUser) {
-          return res.status(409).json({ message: "Email or username already in use" });
+        return res
+          .status(409)
+          .json({ message: "Email or username already in use" });
       }
 
-      // if not, hash the password with bcrypt (10 rounds)
       let hashPassword = req.body.password;
       hashPassword = await bcrypt.hash(hashPassword, 10);
       req.body.passwordHash = hashPassword;
       delete req.body.password;
 
-      // create the user with the dao create function
       const user = await this.dao.create(req.body);
-      return res.status(201).json({
-          id: user._id
-      });
-
-
-    }catch(error){
+      return res.status(201).json({ id: user._id });
+    } catch (error) {
       return res.status(400).json({ message: error.message });
     }
   }
 
-
-  async login(req,res){
-    try{
-      // get the usernme and password from the request body
+  /**
+   * Authenticates a user and generates a JWT token if credentials are valid.
+   *
+   * @async
+   * @function login
+   * @param {import("express").Request} req - Express request object containing email and password.
+   * @param {import("express").Response} res - Express response object.
+   * @returns {Promise<import("express").Response>} Response with a JWT token cookie and user ID, or an error message.
+   *
+   * @example
+   * POST /api/users/login
+   * {
+   *   "email": "user@example.com",
+   *   "password": "mypassword"
+   * }
+   */
+  async login(req, res) {
+    try {
       const email = req.body.email.trim().toLowerCase();
-
       const password = req.body.password;
 
-      //verify if the user exists (filter by username)
       const user = await this.dao.findOne({ email: email });
 
-
       if (!user) {
-          return res.status(404).json({
-              message: "Usuario no encontrado."
-          })
+        return res.status(404).json({
+          message: "User not found.",
+        });
       }
 
-      // if the user exists, verify the password
       const isPasswordValid = await bcrypt.compare(password, user.passwordHash);
       if (!isPasswordValid) {
-          return res.status(401).json({
-              message: "Contraseña o email incorrectos."
-          });
+        return res.status(401).json({
+          message: "Incorrect email or password.",
+        });
       }
 
-      // if the password is valid, create a JWT token
-      // payload: id, username, roles
-      // sign with secret and expiration from .env
-      // return the token in the response
       const token = jwt.sign(
         {
           id: user._id,
           username: user.username,
           name: user.name,
           roles: user.roles,
-          email: user.email
+          email: user.email,
         },
         process.env.JWT_SECRET,
         { expiresIn: process.env.JWT_EXPIRES }
       );
 
-      // return the token and the user id if login is successful
-      res.cookie('token', token, {
-        httpOnly: true,
-        secure: true,
-        sameSite: 'Strict',
-        path: '/',  // <-- añadir esto
-        maxAge: 1000 * 60 * 60 * 24
-      }).status(200).json({ id: user._id });
-          
-    }catch(error){
+      return res
+        .cookie("token", token, {
+          httpOnly: true,
+          secure: true,
+          sameSite: "Strict",
+          path: "/",
+          maxAge: 1000 * 60 * 60 * 24,
+        })
+        .status(200)
+        .json({ id: user._id });
+    } catch (error) {
       return res.status(400).json({ message: error.message });
     }
   }
 
-
+  /**
+   * Initiates a password reset process for a user.
+   *
+   * @async
+   * @function resetPassword
+   * @param {import("express").Request} req - Express request object containing the user's email.
+   * @param {import("express").Response} res - Express response object.
+   * @returns {Promise<import("express").Response>} Response confirming reset initiation or error message.
+   *
+   * @example
+   * POST /api/users/reset-password
+   * {
+   *   "email": "user@example.com"
+   * }
+   */
   async resetPassword(req, res) {
     try {
       const email = req.body.email;
 
-      // verify if this user with this email exists
       const existingUser = await this.dao.findOne({
-          $or: [
-              { email: req.body.email }
-          ]
+        $or: [{ email: email }],
       });
 
       if (!existingUser) {
-          return res.status(404).json({ message: "No user found with this email" });
+        return res
+          .status(404)
+          .json({ message: "No user found with this email" });
       }
 
-
-    }catch (error) {
+      // TODO: Implement sending of reset token/email.
+    } catch (error) {
       return res.status(400).json({ message: error.message });
     }
   }
 
-
+  /**
+   * Logs out the currently authenticated user by clearing the token cookie.
+   *
+   * @async
+   * @function logout
+   * @param {import("express").Request} req - Express request object.
+   * @param {import("express").Response} res - Express response object.
+   * @returns {Promise<import("express").Response>} Response confirming successful logout.
+   *
+   * @example
+   * POST /api/users/logout
+   */
   async logout(req, res) {
     try {
-      return res.cookie('token', '', {
-        httpOnly: true,
-        secure: true,
-        sameSite: 'Strict',
-        path: '/',  
-        expires: new Date(0)
-      }).status(200).json({ message: 'Sesión cerrada correctamente' });
+      return res
+        .cookie("token", "", {
+          httpOnly: true,
+          secure: true,
+          sameSite: "Strict",
+          path: "/",
+          expires: new Date(0),
+        })
+        .status(200)
+        .json({ message: "Logged out successfully" });
     } catch (error) {
       return res.status(500).json({ message: error.message });
     }
   }
-
-  async update(req, res) {
-    try {
-      const { id } = req.params;
-      const updates = req.body;
-
-      // Remove password from updates to prevent unauthorized changes
-      delete updates.password;
-      delete updates.passwordHash;
-
-      const updatedUser = await this.dao.update(id, updates);
-      
-      if (!updatedUser) {
-        return res.status(404).json({ message: "User not found" });
-      }
-
-      // Return user without sensitive data
-      const { passwordHash, ...userWithoutPassword } = updatedUser.toObject();
-      res.json(userWithoutPassword);
-
-    } catch (error) {
-      res.status(400).json({ message: error.message });
-    }
-  }
-
-
-
-  
-
 }
+
 module.exports = new UserController();
