@@ -53,5 +53,25 @@ class TaskController extends GlobalController {
     }
   }
 
+  async update(req, res) {
+    try {
+      const { id } = req.params;
+      const updates = req.body;
+      const ownerId = req.user.id;
+
+      // Verify task exists and belongs to user
+      const existingTask = await TaskDao.findOne({ _id: id, ownerId });
+      if (!existingTask) {
+        return res.status(404).json({ message: "Task not found" });
+      }
+
+      const updatedTask = await TaskDao.update(id, updates);
+      res.json(updatedTask);
+
+    } catch (error) {
+      res.status(400).json({ message: error.message });
+    }
+  }
+
 }
 module.exports = new TaskController();

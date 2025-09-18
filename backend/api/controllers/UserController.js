@@ -137,6 +137,31 @@ class UserController extends GlobalController {
     }
   }
 
+  async update(req, res) {
+    try {
+      const { id } = req.params;
+      const updates = req.body;
+
+      // Remove password from updates to prevent unauthorized changes
+      delete updates.password;
+      delete updates.passwordHash;
+
+      const updatedUser = await this.dao.update(id, updates);
+      
+      if (!updatedUser) {
+        return res.status(404).json({ message: "User not found" });
+      }
+
+      // Return user without sensitive data
+      const { passwordHash, ...userWithoutPassword } = updatedUser.toObject();
+      res.json(userWithoutPassword);
+
+    } catch (error) {
+      res.status(400).json({ message: error.message });
+    }
+  }
+
+
 
   
 
