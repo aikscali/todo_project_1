@@ -182,6 +182,19 @@ class UserController extends GlobalController {
       return res.status(500).json({ message: error.message });
     }
   }
+
+  async updateProfile(req, res) {
+    try {
+      const userId = req.params.id;
+      const { email, name } = req.body;
+
+      const updated = await this.dao.updateProfile(userId, { email, name });
+
+      res.status(200).json(updated);
+    } catch (error) {
+      res.status(400).json({ message: error.message });
+    }
+  }
 }
 
 module.exports = new UserController();
