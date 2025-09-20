@@ -65,7 +65,7 @@ class ResetPasswordController extends globalController {
       });
 
       // Generate the link
-      const resetLink = `${process.env.CLIENT_URL}/reset-password?token=${rawToken}&id=${existingUser._id}`;
+      const resetLink = `${process.env.CLIENT_URL}/#/restore-password?token=${rawToken}&id=${existingUser._id}`;
 
       // Send the email with the link
       await sendEmail(
@@ -105,10 +105,8 @@ class ResetPasswordController extends globalController {
 
     // First, find the passwordReset document in the database by userId and used = false
     try {
-      const passwordResetDoc = await this.dao.findOne({
-        userId: userId,
-        used: false,
-      });
+      const passwordResetDoc = await this.dao.findLatestResetByUser(userId);
+
       if (!passwordResetDoc) {
         return res.status(404).json({ message: "Invalid or expired token" });
       }

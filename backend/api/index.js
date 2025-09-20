@@ -16,7 +16,7 @@ const corsOptions = {
   origin: [
     process.env.CLIENT_URL,
     "http://localhost:5173",
-    /^https:\/\/.*\.vercel\.app$/, // Allow any subdomain under vercel.app
+    /^https:\/\/.*\.vercel\.app$/, 
   ],
   methods: ["GET", "POST", "PUT", "DELETE"],
   allowedHeaders: [

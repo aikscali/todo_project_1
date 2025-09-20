@@ -15,6 +15,16 @@ class PasswordResetDAO extends globalDao {
   constructor() {
     super(modelo);
   }
+
+  async findLatestResetByUser(userId) {
+    try {
+      return await this.model
+        .findOne({ userId: userId, used: false })
+        .sort({ createdAt: -1 });
+    } catch (error) {
+      throw new Error(`Error in findLatestResetByUser: ${error.message}`);
+    }
+  }
 }
 
 module.exports = new PasswordResetDAO();
