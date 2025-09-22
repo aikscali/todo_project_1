@@ -107,8 +107,8 @@ class UserController extends GlobalController {
       return res
         .cookie("token", token, {
           httpOnly: true,
-          secure: true,
-          sameSite: "Strict",
+          secure: process.env.NODE_ENV === 'production', 
+          sameSite: process.env.NODE_ENV === 'production' ? 'None' : 'Strict',
           path: "/",
           maxAge: 1000 * 60 * 60 * 24,
         })
@@ -168,21 +168,23 @@ class UserController extends GlobalController {
    */
   async logout(req, res) {
     try {
+      const cookieOptions = {
+        httpOnly: true,
+        secure: process.env.NODE_ENV === 'production',
+        sameSite: process.env.NODE_ENV === 'production' ? 'None' : 'Strict',
+        path: "/",
+        expires: new Date(0),
+      };
+
       return res
-        .cookie("token", "", {
-          httpOnly: true,
-          secure: true,
-          sameSite: "Strict",
-          path: "/",
-          expires: new Date(0),
-        })
+        .cookie("token", "", cookieOptions)
         .status(200)
         .json({ message: "Logged out successfully" });
     } catch (error) {
       return res.status(500).json({ message: error.message });
     }
   }
-
+ 
   async updateProfile(req, res) {
     try {
       const userId = req.params.id;
@@ -197,4 +199,4 @@ class UserController extends GlobalController {
   }
 }
 
-module.exports = new UserController();
+module.exports = new UserController(); 
