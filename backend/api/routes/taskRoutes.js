@@ -32,9 +32,8 @@ const router = express.Router();
  *   "priority": "high"
  * }
  */
-router.post("/", authMiddleware, (req, res) =>
-  TaskController.createTask(req, res)
-);
+router.post("/", authMiddleware, (req, res) => TaskController.createTask(req, res));
+
 
 /**
  * GET /
@@ -55,9 +54,7 @@ router.post("/", authMiddleware, (req, res) =>
  *   { "id": "124", "title": "Task 2", "status": "done" }
  * ]
  */
-router.get("/", (req, res) =>
-  TaskController.getTasks(req, res)
-);
+router.get("/", authMiddleware, (req, res) => TaskController.getTasks(req, res));
 
 /**
  * PUT /:id
@@ -78,8 +75,12 @@ router.get("/", (req, res) =>
  *   "completedAt": "2025-09-18T12:00:00Z"
  * }
  */
-router.put("/:id", (req, res) =>
-  TaskController.update(req, res)
-);
+router.put("/:id", authMiddleware, (req, res) => TaskController.update(req, res));
+
+
+
+
+
+
 
 module.exports = router;
