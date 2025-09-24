@@ -73,81 +73,53 @@ class UserController extends GlobalController {
    * }
    */
   async login(req, res) {
-    try {
-      const email = req.body.email.trim().toLowerCase();
-      const password = req.body.password;
+  try {
+    const email = req.body.email.trim().toLowerCase();
+    const password = req.body.password;
 
-      const user = await this.dao.findOne({ email: email });
+    const user = await this.dao.findOne({ email });
 
-      if (!user) {
-        return res.status(404).json({
-          message: "User not found.",
-        });
-      }
-
-      const isPasswordValid = await bcrypt.compare(password, user.passwordHash);
-      if (!isPasswordValid) {
-        return res.status(401).json({
-          message: "Incorrect email or password.",
-        });
-      }
-
-      const token = jwt.sign(
-        {
-          id: user._id,
-          username: user.username,
-          name: user.name,
-          roles: user.roles,
-          email: user.email,
-        },
-        process.env.JWT_SECRET,
-        { expiresIn: process.env.JWT_EXPIRES }
-      );
-
-      
-
-      function sameSiteValue() {
-        if (process.env.NODE_ENV === 'production'){
-          return res
-          .cookie("token", token, {
-            httpOnly: true,
-            secure: true, 
-            sameSite: "None",
-            path: "/",
-            maxAge: 1000 * 60 * 60 * 24,
-          })
-          .status(200)
-          .json({ id: user._id });
-        }else{
-          return res
-          .cookie("token", token, {
-            httpOnly: true,
-            secure: true, 
-            sameSite: "Strict",
-            path: "/",
-            maxAge: 1000 * 60 * 60 * 24,
-          })
-          .status(200)
-          .json({ id: user._id });
-        }
-      }
-
-      //console.log(sameSiteValue())
-
-      // return res
-      //   .cookie("token", token, {
-      //     httpOnly: true,
-      //     secure: true, 
-      //     sameSite: sameSiteValue(),
-      //     path: "/",
-      //     maxAge: 1000 * 60 * 60 * 24,
-      //   })
-      //   .status(200)
-      //   .json({ id: user._id });
-    } catch (error) {
-      return res.status(400).json({ message: error.message });
+    if (!user) {
+      return res.status(404).json({ message: "User not found." });
     }
+
+    const isPasswordValid = await bcrypt.compare(password, user.passwordHash);
+    if (!isPasswordValid) {
+      return res.status(401).json({ message: "Incorrect email or password." });
+    }
+
+    const token = jwt.sign(
+      {
+        id: user._id,
+        username: user.username,
+        name: user.name,
+        roles: user.roles,
+        email: user.email,
+      },
+      process.env.JWT_SECRET,
+      { expiresIn: process.env.JWT_EXPIRES }
+    );
+
+    // 👇 aquí decides el valor de sameSite
+    const sameSite =
+      process.env.NODE_ENV === "production" ? "None" : "Strict";
+
+    return res
+      .cookie("token", token, {
+        httpOnly: true,
+        secure: true, 
+        sameSite: sameSite,
+        path: "/",
+        maxAge: 1000 * 60 * 60 * 24, 
+      })
+      .status(200)
+      .json({ id: user._id });
+
+  } catch (error) {
+    return res.status(400).json({ message: error.message });
   }
+}
+
 
   /**
    * Initiates a password reset process for a user.
