@@ -104,7 +104,7 @@ class UserController extends GlobalController {
         { expiresIn: process.env.JWT_EXPIRES }
       );
 
-      
+
 
       function sameSiteValue() {
         if (process.env.NODE_ENV === 'production'){
@@ -118,7 +118,7 @@ class UserController extends GlobalController {
         .cookie("token", token, {
           httpOnly: true,
           secure: true, 
-          sameSite: "Lax",
+          sameSite: sameSiteValue(),
           path: "/",
           maxAge: 1000 * 60 * 60 * 24,
         })
