@@ -108,7 +108,7 @@ class UserController extends GlobalController {
         .cookie("token", token, {
           httpOnly: true,
           secure: process.env.NODE_ENV === 'production', 
-          sameSite: process.env.NODE_ENV === 'production' ? 'None' : 'Strict',
+          sameSite: "None",
           path: "/",
           maxAge: 1000 * 60 * 60 * 24,
         })
@@ -171,7 +171,8 @@ class UserController extends GlobalController {
       const cookieOptions = {
         httpOnly: true,
         secure: process.env.NODE_ENV === 'production',
-        sameSite: process.env.NODE_ENV === 'production' ? 'None' : 'Strict',
+        //sameSite: process.env.NODE_ENV === 'production' ? 'None' : 'Strict',
+        sameSite: "None",
         path: "/",
         expires: new Date(0),
       };
