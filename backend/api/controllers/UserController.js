@@ -104,11 +104,21 @@ class UserController extends GlobalController {
         { expiresIn: process.env.JWT_EXPIRES }
       );
 
+      
+
+      function sameSiteValue() {
+        if (process.env.NODE_ENV === 'production'){
+          return "None"
+        }else{
+          return "Lax"
+        }
+      }
+
       return res
         .cookie("token", token, {
           httpOnly: true,
-          secure: process.env.NODE_ENV === 'production', 
-          sameSite: "None",
+          secure: true, 
+          sameSite: "Lax",
           path: "/",
           maxAge: 1000 * 60 * 60 * 24,
         })
@@ -167,15 +177,27 @@ class UserController extends GlobalController {
    * POST /api/users/logout
    */
   async logout(req, res) {
+
+    const sameSiteValue = () => {
+      if (process.env.NODE_ENV === 'production'){
+        return "None"
+      }else{
+        return "Strict"
+      }
+    }
+
+
     try {
       const cookieOptions = {
         httpOnly: true,
         secure: process.env.NODE_ENV === 'production',
         //sameSite: process.env.NODE_ENV === 'production' ? 'None' : 'Strict',
-        sameSite: "None",
+        sameSite: sameSiteValue(),
         path: "/",
         expires: new Date(0),
       };
+
+      
 
       return res
         .cookie("token", "", cookieOptions)

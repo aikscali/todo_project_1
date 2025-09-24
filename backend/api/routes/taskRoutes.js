@@ -81,6 +81,11 @@ router.put("/:id", authMiddleware, (req, res) => TaskController.update(req, res)
 
 
 
+router.delete("/:id", authMiddleware, (req, res) => TaskController.delete(req, res));
+
+
+
+
 
 
 module.exports = router;
