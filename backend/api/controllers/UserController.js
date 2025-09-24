@@ -104,26 +104,46 @@ class UserController extends GlobalController {
         { expiresIn: process.env.JWT_EXPIRES }
       );
 
-
+      
 
       function sameSiteValue() {
         if (process.env.NODE_ENV === 'production'){
-          return "None"
+          return res
+          .cookie("token", token, {
+            httpOnly: true,
+            secure: true, 
+            sameSite: "None",
+            path: "/",
+            maxAge: 1000 * 60 * 60 * 24,
+          })
+          .status(200)
+          .json({ id: user._id });
         }else{
-          return "Lax"
+          return res
+          .cookie("token", token, {
+            httpOnly: true,
+            secure: true, 
+            sameSite: "Strict",
+            path: "/",
+            maxAge: 1000 * 60 * 60 * 24,
+          })
+          .status(200)
+          .json({ id: user._id });
         }
       }
 
-      return res
-        .cookie("token", token, {
-          httpOnly: true,
-          secure: true, 
-          sameSite: sameSiteValue(),
-          path: "/",
-          maxAge: 1000 * 60 * 60 * 24,
-        })
-        .status(200)
-        .json({ id: user._id });
+      //console.log(sameSiteValue())
+
+      // return res
+      //   .cookie("token", token, {
+      //     httpOnly: true,
+      //     secure: true, 
+      //     sameSite: sameSiteValue(),
+      //     path: "/",
+      //     maxAge: 1000 * 60 * 60 * 24,
+      //   })
+      //   .status(200)
+      //   .json({ id: user._id });
     } catch (error) {
       return res.status(400).json({ message: error.message });
     }
