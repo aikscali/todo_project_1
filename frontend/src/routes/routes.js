@@ -14,6 +14,5 @@ export function router() {
   app.appendChild(Page());
 }
 
-
 window.addEventListener("hashchange", router);
 window.addEventListener("load", router);
